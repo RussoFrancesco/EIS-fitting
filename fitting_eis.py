@@ -17,11 +17,7 @@ r_cols = [c for c in df.columns if c.startswith("r_")]
 i_cols = [c for c in df.columns if c.startswith("i_")]
 
 tmp_circuit = CustomCircuit(circuit_str, initial_guess=initial_guess)
-param_names, param_units = tmp_circuit.get_param_names()
-
-print("📋 Parametri del circuito:")
-for name, unit in zip(param_names, param_units):
-    print(f" - {name} [{unit}]")
+param_names, _ = tmp_circuit.get_param_names()
 
 for idx, row in df.iterrows():
     cella = row["cell"]
@@ -44,7 +40,6 @@ for idx, row in df.iterrows():
         circuit.fit(freqs, Z)
         Z_fit = circuit.predict(freqs)
         rms_error = np.sqrt(np.mean(np.abs(Z - Z_fit)**2))
-
         params = circuit.parameters_
 
         result = {
@@ -54,7 +49,6 @@ for idx, row in df.iterrows():
             "soc": soc,
             "RMS_error": rms_error,
         }
-
         for name, val in zip(param_names, params):
             result[name] = val
 
@@ -65,13 +59,4 @@ for idx, row in df.iterrows():
         print(f"Fit fallito per {cella} | SOH={soh} | SOC={soc} — {e}")
 
 fit_df = pd.DataFrame(results)
-
-cols = fit_df.columns.tolist()
-unit_row = {col: "" for col in cols}
-for name, unit in zip(param_names, param_units):
-    if name in unit_row:
-        unit_row[name] = unit
-
-fit_df_units = pd.DataFrame([unit_row])
-fit_df_final = pd.concat([fit_df_units, fit_df], ignore_index=True)
-fit_df_final.to_csv(output_csv, index=False)
+fit_df.to_csv(output_csv, index=False)
