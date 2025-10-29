@@ -24,6 +24,7 @@ for idx, row in df.iterrows():
     soh = float(row["soh"])
     soc = float(row["soc"])
     temp = float(row["temperature"])
+    idx = int(row["id"])
 
     freqs = row[f_cols].dropna().to_numpy(dtype=float)
     Z_real = row[r_cols].dropna().to_numpy(dtype=float)
@@ -44,6 +45,7 @@ for idx, row in df.iterrows():
 
         result = {
             "cell": cella,
+            "id": idx,
             "temperature": temp,
             "soh": soh,
             "soc": soc,
