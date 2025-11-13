@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from impedance.models.circuits import CustomCircuit
 
-input_csv = "dataset_sorted.csv"
-output_csv = "fit_results.csv"
+input_csv = "curve_filtrate.csv"
+output_csv = "good_curves_parameters.csv"
 circuit_str = "L0-R0-p(R1,CPE1)-p(R2,CPE2)-CPE3"
 
 initial_guess = [1e-6, 1e-2, 0.1, 1e-5, 0.9, 1.0, 1e-4, 0.8, 1e-5, 0.5]
@@ -21,6 +21,8 @@ param_names, _ = tmp_circuit.get_param_names()
 
 for idx, row in df.iterrows():
     cella = row["cell"]
+    if cella != 1.0 and cella != 2.0 and cella != 5.0:
+        continue
     soh = float(row["soh"])
     soc = float(row["soc"])
     temp = float(row["temperature"])
